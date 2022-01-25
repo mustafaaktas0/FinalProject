@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -61,7 +62,7 @@ namespace Business.Concrete
 
             
         }
-
+        [SecuredOperation("Product.List,Admin")]
         public IDataResult<List<Product>>GetAllByCategoryId(int id)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id)); 
@@ -81,6 +82,7 @@ namespace Business.Concrete
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
+            //select * from products where categoryId=x gibi bir sorgu gonderir tüm veritabanını çekmezz
             var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count; // arka planda tüm veriyi çekip ona işlem yapmıyor linquery olusturuyor yani select * from gibi
 
             if (result >= 15)
@@ -110,5 +112,7 @@ namespace Business.Concrete
             }
             return new SuccessResult();
         }
+
+  
     }
 }
