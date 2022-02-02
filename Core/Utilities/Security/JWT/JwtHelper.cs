@@ -21,6 +21,7 @@ namespace Core.Utilities.Security.JWT
         {
             Configuration = configuration;
             _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
 
         }
         public AccessToken CreateToken(User user, List<OperationClaim> operationClaims)
@@ -28,8 +29,8 @@ namespace Core.Utilities.Security.JWT
             _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
-            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);  
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();// olusan tokeni yazdırmak için
             var token = jwtSecurityTokenHandler.WriteToken(jwt);
 
             return new AccessToken
